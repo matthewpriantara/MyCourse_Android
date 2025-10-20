@@ -1,0 +1,75 @@
+Nama    : Matthew Hayunaji Priantara
+NIM     : 24/536179/SV/24400
+Kelas   : B2
+
+TabLayout & ViewPager Implementation``
+
+1. Pendahuluan
+
+Navigasi berbasis tab adalah salah satu pola antarmuka pengguna (UI) yang paling umum dan intuitif dalam pengembangan aplikasi mobile. Android menyediakan komponen modern untuk tujuan ini, yaitu ViewPager2 dan TabLayout. ViewPager2 berfungsi sebagai kontainer yang memungkinkan pengguna untuk menggeser (swipe) antar halaman, sementara TabLayout menyediakan indikator tab yang dapat diklik oleh pengguna.
+
+Laporan ini bertujuan untuk menjelaskan secara rinci dan bertahap proses implementasi kedua komponen tersebut untuk membangun UI dengan dua tab: "Home" dan "Profile". Tujuan dari implementasi ini adalah untuk memahami cara menambahkan dan menggunakan library eksternal serta memahami peran dan cara kerja sebuah Adapter.
+
+2. Langkah-langkah Implementasi
+Proses implementasi dibagi menjadi lima langkah utama, mulai dari konfigurasi proyek hingga integrasi akhir semua komponen.
+
+Langkah 1: Konfigurasi Proyek dan Dependensi
+
+Langkah pertama adalah menyiapkan proyek dan menambahkan dependency atau pustaka (library) yang diperlukan.
+
+    Menambahkan Library Material Design: ViewPager2 dan TabLayout merupakan bagian dari library Material Design. Untuk menggunakannya, baris berikut perlu ditambahkan ke dalam file build.gradle.kts (Module: app) di dalam blok dependencies.
+    Groovy
+
+implementation("com.google.android.material:material:1.11.0")
+
+Baris ini menginstruksikan Gradle untuk mengunduh dan menyertakan library tersebut ke dalam proyek.
+
+Mengaktifkan View Binding: Untuk mempermudah dan mengamankan akses ke komponen UI di file layout, fitur viewBinding diaktifkan di dalam blok buildFeatures.
+Groovy
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+Langkah 2: Mendesain Layout Utama (activity_main.xml)
+
+Layout utama aplikasi didefinisikan di activity_main.xml. File ini berfungsi sebagai "panggung" untuk meletakkan TabLayout dan ViewPager2.
+
+    <com.google.android.material.tabs.TabLayout>: Widget ini ditempatkan di bagian atas layar untuk menampilkan judul-judul tab ("Home", "Profile").
+
+    <androidx.viewpager2.widget.ViewPager2>: Widget ini ditempatkan di bawah TabLayout dan mengisi sisa layar. Fungsinya sebagai kontainer dinamis yang akan diisi dengan konten dari setiap halaman (Fragment).
+
+Langkah 3: Membuat Fragment untuk Setiap Halaman
+
+Setiap halaman atau tab dalam ViewPager2 dikelola oleh sebuah Fragment. Fragment adalah komponen UI modular yang memiliki siklus hidupnya sendiri.
+
+    HomeFragment.kt & fragment_home.xml: Pasangan file ini bertanggung jawab untuk halaman "Home". File XML-nya mendefinisikan tata letak (tombol dan teks), sedangkan file Kotlin-nya menangani logika, seperti memberikan aksi klik pada tombol.
+
+    ProfileFragment.kt & fragment_profile.xml: Pasangan file ini bertanggung jawab untuk halaman "Profile". Untuk saat ini, fungsinya hanya sebagai halaman kedua untuk menunjukkan bahwa navigasi tab berhasil.
+
+Langkah 4: Membuat Adapter (ViewPagerAdapter.kt)
+
+Adapter adalah komponen kunci yang berfungsi sebagai jembatan antara data (dalam kasus ini, Fragment) dan komponen UI yang menampilkannya (ViewPager2). Ini adalah inti dari tujuan "memahami penggunaan adapter".
+
+    Pewarisan (Inheritance): Kelas ViewPagerAdapter harus mewarisi FragmentStateAdapter, yang dirancang khusus untuk mengelola Fragment di dalam ViewPager2 secara efisien.
+
+    getItemCount(): Metode ini wajib di-override untuk memberitahu ViewPager2 berapa jumlah total halaman yang akan ditampilkan. Dalam proyek ini, kita mengembalikannya dengan nilai 2.
+
+    createFragment(position: Int): Ini adalah metode paling penting. ViewPager2 akan memanggil metode ini setiap kali perlu menampilkan sebuah halaman. Berdasarkan position yang diberikan (0 untuk tab pertama, 1 untuk tab kedua, dst.), metode ini menggunakan when untuk mengembalikan objek Fragment yang sesuai (HomeFragment atau ProfileFragment).
+
+Langkah 5: Mengintegrasikan Komponen di MainActivity.kt
+
+MainActivity.kt berfungsi sebagai "konduktor" yang mengatur semua komponen agar bekerja sama.
+
+    Inisialisasi Adapter: Sebuah objek ViewPagerAdapter dibuat: val adapter = ViewPagerAdapter(this).
+
+    Menghubungkan Adapter ke ViewPager2: Adapter yang baru dibuat ditetapkan ke ViewPager2: binding.viewPager.adapter = adapter.
+
+    Sinkronisasi dengan TabLayoutMediator: TabLayoutMediator adalah kelas pembantu yang menyinkronkan TabLayout dengan ViewPager2. Ia secara otomatis menangani dua hal:
+
+        Saat pengguna menggeser halaman, tab yang sesuai akan terpilih.
+
+        Saat pengguna mengetuk sebuah tab, halaman yang sesuai akan ditampilkan. Blok lambda di dalamnya digunakan untuk mengatur teks judul untuk setiap tab berdasarkan posisinya.
+
+3. Penutup
+Melalui kelima langkah di atas, sebuah antarmuka pengguna dengan navigasi tab yang fungsional berhasil diimplementasikan. Proses ini telah mencakup tujuan pembelajaran utama, yaitu bagaimana cara menambahkan library eksternal ke dalam proyek melalui Gradle dan bagaimana sebuah Adapter bekerja sebagai penghubung antara data dan UI di dalam ViewPager2. Implementasi ini menghasilkan aplikasi yang modern, efisien, dan sesuai dengan praktik terbaik pengembangan Android.
